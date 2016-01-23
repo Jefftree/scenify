@@ -1,17 +1,35 @@
 // Setup basic express server
 var express = require('express');
-var app = express();
 var server = require('http').createServer(app);
+var bodyParser = require('body-parser');
+var app = express();
+var rp = require('request-promise')
+
 var io = require('socket.io')(server);
 var port = process.env.PORT || 3000;
 
-app.use(express.static(__dirname + '/public'));
+app.use(bodyParser.json());
+app.use(express.static('public'));
 
-app.get('/test', function(req, res) {
-  res.send('hello world');
+var scenify = require('./lib/scenify')
+console.log(scenify)
+
+app.post('/api/coord', function(req, res) {
+    console.log(req.body)
+    var result = scenify.process(req.body)
+    res.send("done");
 });
 
-server.listen(port, function () {
+
+
+
+app.post('/api/ratings', function(req, res) {
+    console.log(req.body)
+    var urls = req.body.urls
+    res.send(urls);
+});
+
+app.listen(port, function () {
   console.log('Server listening at port %d', port);
 });
 

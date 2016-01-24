@@ -109,12 +109,28 @@ function createMarker2(latLng) {
 
     // console.log(JSON.stringify(startEnd));
     calcRoute();
+    startEnd.long1 = startEnd.lng1
+    startEnd.long2 = startEnd.lng2
+    console.log(startEnd)
 
-    // $.post("http://jying.ca:6969/api/coord", startEnd,
-    // function(data, status){
-    //     alert("Data: " + data + "\nStatus: " + status);
-    // });
-  }
+    $.ajax({
+        url: '/api/coord',
+        type: 'POST',
+        contentType: "application/json; charset=utf-8",
+        traditional: true,
+        data:JSON.stringify((startEnd)),
+        success: function (results) {
+        //this for logging the result
+            console.log(results);
+        }
+        });
+    }
+
+     //$.post("http://jying.ca:6969/api/coord", JSON.stringify(startEnd),
+     //function(data, status){
+        //console.log("hi")
+         //alert("Data: " + data + "\nStatus: " + status);
+     //});
 
   var marker = new google.maps.Marker({
     map: map,

@@ -13,15 +13,18 @@ function initMap() {
     zoom: 15
   });
 
-  directionsDisplay = new google.maps.DirectionsRenderer();
   directionsService = new google.maps.DirectionsService();
+  directionsDisplay = new google.maps.DirectionsRenderer({
+       suppressMarkers: true
+   });
 
   infowindow = new google.maps.InfoWindow();
+  directionsDisplay.setMap(map);
 
   google.maps.event.addListener(map, 'click', function(event) {
     startMarker = false;
     if (!startEnd.hasOwnProperty("lat2")) {
-      createMarker(event.latLng);
+      createMarker2(event.latLng);
     }
   });
 }
@@ -39,7 +42,65 @@ function callback(results, status) {
   }
 }
 
-function createMarker(latLng) {
+function calcRoute() {
+
+    var waypts = [];
+
+    stop = new google.maps.LatLng(45.4985219, -73.5794001)
+    waypts.push({
+        location: stop,
+        stopover: true
+    });
+    createMarker(stop);
+
+    stop = new google.maps.LatLng(45.5046334, -73.5516726)
+    waypts.push({
+        location: stop,
+        stopover: true
+    });
+    createMarker(stop);
+
+    stop = new google.maps.LatLng(45.5044753, -73.577584)
+    waypts.push({
+        location: stop,
+        stopover: true
+    });
+    createMarker(stop);
+
+    start = new google.maps.LatLng(startEnd.lat1, startEnd.lng1);
+    end = new google.maps.LatLng(startEnd.lat2, startEnd.lng2);
+
+    createMarker(start);
+    createMarker(end);
+
+    var request = {
+        origin: start,
+        destination: end,
+        waypoints: waypts,
+        optimizeWaypoints: true,
+        travelMode: google.maps.DirectionsTravelMode.WALKING
+    };
+
+    directionsService.route(request, function (response, status) {
+        if (status == google.maps.DirectionsStatus.OK) {
+            directionsDisplay.setDirections(response);
+            var route = response.routes[0];
+        }
+    });
+}
+
+function createMarker(latlng) {
+
+    var marker = new google.maps.Marker({
+        position: latlng,
+        map: map
+
+    });
+}
+
+
+
+function createMarker2(latLng) {
   // var placeLoc = place.geometry.location;
   if (!startEnd.hasOwnProperty("lat1")) {
     startEnd.lat1 = latLng.lat();
@@ -48,12 +109,13 @@ function createMarker(latLng) {
     startEnd.lat2 = latLng.lat();
     startEnd.lng2 = latLng.lng();
 
-    calcRoute(); // send in specific params later
+    // console.log(JSON.stringify(startEnd));
+    calcRoute();
 
-    $.post("/api/coord", startEnd,
-    function(data, status){
-        alert("Data: " + data + "\nStatus: " + status);
-    });
+    // $.post("http://jying.ca:6969/api/coord", startEnd,
+    // function(data, status){
+    //     alert("Data: " + data + "\nStatus: " + status);
+    // });
   }
 
   var marker = new google.maps.Marker({

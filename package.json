@@ -9,6 +9,7 @@
     "promise": "^7.1.1",
     "request": "^2.67.0",
     "request-promise": "^2.0.0",
+    "sceney": "^0.1.2",
     "socket.io": "^1.4.4"
   }
 }

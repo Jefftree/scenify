@@ -16,8 +16,9 @@ console.log(scenify)
 
 app.post('/api/coord', function(req, res) {
     console.log(req.body)
-    var result = scenify.process(req.body)
-    res.send("done");
+    var result = scenify.process(req.body, function(err, _res) {
+        res.send(_res);
+    })
 });
 
 

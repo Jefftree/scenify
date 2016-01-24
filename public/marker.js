@@ -1,12 +1,10 @@
-// This example requires the Places library. Include the libraries=places
-// parameter when you first load the API. For example:
-// <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
-
 var map;
 var infowindow;
+var marker;
+var startEnd = {};
 
 function initMap() {
-  var montreal = {lat: 45.50, lng: -73.57};
+  var montreal = {lat: 45.50, lng: -73.57}; // user input
 
   map = new google.maps.Map(document.getElementById('map'), {
     center: montreal,
@@ -15,18 +13,20 @@ function initMap() {
 
   infowindow = new google.maps.InfoWindow();
 
-  var service = new google.maps.places.PlacesService(map);
-  service.nearbySearch({
-    location: montreal,
-    radius: 5000,
-    types: ['point_of_interest|museum']
-  }, callback);
+  google.maps.event.addListener(map, 'click', function(event) {
+    startMarker = false;
+    if (!startEnd.hasOwnProperty("lat2")) {
+      createMarker(event.latLng);
+    }
+  });
 }
 
 function callback(results, status) {
   if (status === google.maps.places.PlacesServiceStatus.OK) {
     for (var i = 0; i < results.length; i++) {
-      // console.log(results[i].name);
+
+      console.log(results[i].place_id);
+      // place_id = results[i].place_id;
       console.log('Result ' + JSON.stringify(results[i]));
       createMarker(results[i]);
     }
@@ -34,16 +34,23 @@ function callback(results, status) {
   }
 }
 
-function createMarker(place) {
-  var placeLoc = place.geometry.location;
-  console.log('placeLoc ' + placeLoc);
+function createMarker(latLng) {
+  // var placeLoc = place.geometry.location;
+  if (!startEnd.hasOwnProperty("lat1")) {
+    startEnd.lat1 = latLng.lat();
+    startEnd.lng1 = latLng.lng();
+  } else if (!startEnd.hasOwnProperty("lat2")) {
+    startEnd.lat2 = latLng.lat();
+    startEnd.lng2 = latLng.lng();
+  }
+
   var marker = new google.maps.Marker({
     map: map,
-    position: place.geometry.location
+    position: latLng
   });
 
-  google.maps.event.addListener(marker, 'click', function() {
-    infowindow.setContent(place.name);
-    infowindow.open(map, this);
-  });
+  // google.maps.event.addListener(marker, 'click', function() {
+  //   infowindow.setContent(place.name);
+  //   infowindow.open(map, this);
+  // });
 }

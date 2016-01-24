@@ -98,8 +98,6 @@ function createMarker(latlng) {
     });
 }
 
-
-
 function createMarker2(latLng) {
   // var placeLoc = place.geometry.location;
   if (!startEnd.hasOwnProperty("lat1")) {

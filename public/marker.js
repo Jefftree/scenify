@@ -2,6 +2,8 @@ var map;
 var infowindow;
 var marker;
 var startEnd = {};
+var directionsDisplay;
+var directionsService;
 
 function initMap() {
   var montreal = {lat: 45.50, lng: -73.57}; // user input
@@ -10,6 +12,9 @@ function initMap() {
     center: montreal,
     zoom: 15
   });
+
+  directionsDisplay = new google.maps.DirectionsRenderer();
+  directionsService = new google.maps.DirectionsService();
 
   infowindow = new google.maps.InfoWindow();
 
@@ -42,6 +47,13 @@ function createMarker(latLng) {
   } else if (!startEnd.hasOwnProperty("lat2")) {
     startEnd.lat2 = latLng.lat();
     startEnd.lng2 = latLng.lng();
+
+    calcRoute(); // send in specific params later
+
+    $.post("/api/coord", startEnd,
+    function(data, status){
+        alert("Data: " + data + "\nStatus: " + status);
+    });
   }
 
   var marker = new google.maps.Marker({

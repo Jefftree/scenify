@@ -6,7 +6,7 @@ var app = express();
 var rp = require('request-promise')
 
 var io = require('socket.io')(server);
-var port = process.env.PORT || 3000;
+var port = process.env.PORT || 6969;
 
 app.use(bodyParser.json());
 app.use(express.static('public'));
